@@ -1,1 +1,29 @@
+name: Build IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      nsp_url:
+        description: 'ลิงก์ดาวน์โหลดตรงของไฟล์เกม NSP/ZIP (ถ้ามี)'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check build_ipa_from_nsp.py options
+        run: |
+          python3 scripts/build_ipa_from_nsp.py --help || true
+          cat README.md | head -n 80
+
+      - name: Upload IPA if generated
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-ipa
+          path: "**/*.ipa"
 
